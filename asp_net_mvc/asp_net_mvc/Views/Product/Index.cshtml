@@ -1,0 +1,350 @@
+﻿@model asp_net_mvc.Models.ProductModels.IndexProductModel
+
+<div class="text-center">
+    <button class="myBtn" data-toggle="modal" data-target="#dialogCreate" id="buttonCreateOpen">Create</button>
+    <div id="PlaceForProduct">
+
+    </div>
+
+</div>
+@*Create*@
+<div class="modal fade" tabindex="-1" id="dialogCreate" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card card-waves">
+                <div class="card-header">
+                    Create product
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="datatable">
+                        <div class="row">
+                            <div id="CreateProduct" class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="registerLogin">Title</label>
+                                    <input class="form-control" id="Title" placeholder="Title" style=" display: block; width: 100%;" type="text" oninput="clearValid(this)" />
+                                    <div class="invalid-feedback" style="display:block">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="registerLogin">Description</label>
+                                    <textarea class="form-control" id="Description" style="width:100%" placeholder="Body" oninput="clearValid(this)"></textarea>
+                                    <div class="invalid-feedback" style="display:block">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="registerLogin">Price</label>
+                                    <textarea class="form-control" id="Price" style="width:100%" placeholder="Price" oninput="validPrice(this)"></textarea>
+                                    <div class="invalid-feedback" style="display:block">
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; flex-direction: row-reverse;">
+                                    <button type="button" class="myBtn" onclick="createProduct()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Update*@
+<div class="modal fade" tabindex="-1" id="dialogUpdate" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card card-waves">
+                <div class="card-header">
+                    Update product
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <input id="UpdateProductId" hidden />
+                <div class="card-body">
+                    <div class="datatable">
+                        <div class="row">
+                            <div id="UpdateProduct" class="col-lg-12">
+                                <div class="form-group">
+                                    <label for="registerLogin">Title</label>
+                                    <input class="form-control" id="UpdateTitle" placeholder="Title" style=" display: block; width: 100%;" type="text" oninput="clearValid(this)" />
+                                    <div class="invalid-feedback" style="display:block">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="registerLogin">Description</label>
+                                    <textarea class="form-control" id="UpdateDescription" style="width:100%" placeholder="Body" oninput="clearValid(this)"></textarea>
+                                    <div class="invalid-feedback" style="display:block">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="registerLogin">Price</label>
+                                    <textarea class="form-control" id="UpdatePrice" style="width:100%" placeholder="Price" oninput="validPrice(this)"></textarea>
+                                    <div class="invalid-feedback" style="display:block">
+                                    </div>
+                                </div>
+                                <div style="display: flex; flex-direction: row-reverse;">
+                                    <button type="button" class="myBtn" onclick="updateProduct()">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*View*@
+<div class="modal fade" tabindex="-1" id="dialogView" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card card-waves">
+                <div class="card-header">
+                    Product
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div class="datatable">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <h3>Title:</h3>
+                                    <h5 id="ViewProductTitle"></h5>
+                                </div>
+                                <div class="form-group">
+                                    <h3>Description:</h3>
+                                    <p id="ViewProductDescription"></p>
+                                </div>
+                                <div class="form-group">
+                                    <h3>Price:</h3>
+                                    <p id="ViewProductPrice"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@{await Html.RenderPartialAsync("PartialDelete", "Product");}
+
+<script>
+    function validPrice(element) {
+        clearValid(element)
+        let templateFprPrice = /\d*((\.|,)\d+)|\d*/d
+        let match = templateFprPrice.exec(element.value)
+        if (match[0] !== match.input || element.value=="") {
+            setValidationInElement(element, "is-invalid", "Price doesnt recognise");
+            return;
+        }
+        setValidationInElement(element, "is-valid", "");
+
+    }
+    document.addEventListener("DOMContentLoaded", () => getProducts())
+    function createProductElement(product) {
+        let placeForProduct = document.getElementById("PlaceForProduct");
+        let productElement = document.createElement("div")
+        productElement.id = product.id;
+        productElement.classList.add("product");
+
+        let templateForContentOfTopic = `<div class="product_content">
+                    <strong>${product.id}. ${product.title}</strong>
+                    <div>
+                        ${product.description}
+                    </div>
+                    <div>
+                        ${product.price}
+                    </div>
+                    <div>
+                        ${product.creationDate}
+                    </div>
+
+                </div>
+
+                <div class="product_btn">
+                    <button class="myBtn" data-toggle="modal" data-target="#dialogUpdate" id="buttonUpdateOpen" onclick="updateProductModalOpen({id:'${product.id}',title:'${product.title}',description:'${product.description}',price:'${product.price}'})">Update</button>
+                    <button class="myBtn" data-toggle="modal" data-target="#dialogView" id="buttonViewOpen" onclick="viewProductModalOpen({id:'${product.id}',title:'${product.title}',description:'${product.description}',creationDate:'${product.creationDate}',price:'${product.price}'})">View</button>
+                    <button class="myBtn" data-toggle="modal" data-target="#dialogDelete" id="buttonDeleteOpen" onclick="deleteProductModalOpen({Id:'${product.id}',Name:'${product.title}'})">Delete</button>
+                </div>`
+        productElement.innerHTML = templateForContentOfTopic
+        placeForProduct.appendChild(productElement)
+    }
+    function getProducts() {
+        $.ajax({
+            type: "GET",
+            url: "/Product/GetProducts",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                let placeForProduct = document.getElementById("PlaceForProduct");
+                placeForProduct.innerHTML = "";
+                data.forEach(product => {
+                    createProductElement(product)
+                })
+            }
+
+        });
+
+    }
+    function validateProduct(modalInput) {
+        if (modalInput.title.value == "")
+            setValidationInElement(modalInput.title, "is-invalid", "Title is emtpy");
+
+        if (modalInput.description.value == "")
+            setValidationInElement(modalInput.description, "is-invalid", "Topic is emtpy");
+
+        if (modalInput.price.value == "")
+            setValidationInElement(modalInput.price, "is-invalid", "Price is emtpy");
+    }
+    function createProduct() {
+        let title = document.getElementById("Title");
+        let description = document.getElementById("Description");
+        let price = document.getElementById("Price");
+
+        let modalInput = {
+            title: title,
+            description: description,
+            price: price,
+        }
+        validateProduct(modalInput);
+        let parentSelector = "#CreateProduct"
+        let childrenSelector = "input,textarea"
+        let idInputs = getIdInput(parentSelector, childrenSelector);
+
+        var functionSome = Array.prototype.some;
+        var isCorrect = functionSome.call(idInputs, function (element) {
+            return element.classList.contains("is-invalid");
+        });
+
+        if (isCorrect)
+            return;
+
+        let model = {
+            Description: description.value,
+            Title: title.value,
+            Price: price.value
+        }
+        $.ajax({
+            type: "POST",
+            url: "/Product/Create",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                getProducts()
+            },
+
+        });
+        title.value = ""
+        description.value = ""
+        price.value = ""
+        $('#dialogCreate').modal('hide')
+
+
+    }
+    function updateProductModalOpen(product) {
+        let productId = document.getElementById("UpdateProductId");
+        let title = document.getElementById("UpdateTitle");
+        let description = document.getElementById("UpdateDescription");
+        let price = document.getElementById("UpdatePrice");
+
+        productId.value = product.id
+        title.value = product.title
+        description.value = product.description
+        price.value = product.price
+
+        clearValid(title);
+        clearValid(description);
+        clearValid(price);
+    }
+    function updateProduct() {
+        let productId = document.getElementById("UpdateProductId");
+        let title = document.getElementById("UpdateTitle");
+        let description = document.getElementById("UpdateDescription");
+        let price = document.getElementById("UpdatePrice");
+        let modalInput = {
+            title: title,
+            description: description,
+            price: price,
+        }
+        let parentSelector = "#UpdateProduct"
+        let childrenSelector = "input,textarea"
+        let idInputs = getIdInput(parentSelector, childrenSelector);
+        validateProduct(modalInput);
+
+        var functionSome = Array.prototype.some;
+        var isCorrect = functionSome.call(idInputs, function (element) {
+            return element.classList.contains("is-invalid");
+        });
+
+        if (isCorrect)
+            return;
+
+        let model = {
+            Id: Number(productId.value),
+            Title: title.value,
+            Description: description.value,
+            Price: price.value
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Product/Update",
+            data: JSON.stringify(model),
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                getProducts()
+            },
+
+        });
+        $('#dialogUpdate').modal('hide')
+    }
+
+    function viewProductModalOpen(product) {
+        let title = document.getElementById("ViewProductTitle");
+        let description = document.getElementById("ViewProductDescription");
+        let price = document.getElementById("ViewProductPrice");
+
+        title.innerText = product.title
+        description.innerText = product.description
+        price.innerText = product.price
+
+    }
+    let odjectGridName;
+    function deleteProductModalOpen(model) {
+        let id = document.getElementById("deleteId");
+        let deletedName = document.getElementById("deletedName");
+        let deleteName = document.getElementById("deleteName");
+
+        id.value = model.Id;
+
+        deleteName.value = "";
+        deletedName.textContent = model.Name;
+        odjectGridName = model.Name;
+    }
+    function deleteModel(element) {
+        dialogModel = "dialogDelete";
+
+        let id = document.getElementById("deleteId");
+        let deletedName = document.getElementById("deleteName");
+        if (deletedName.value != odjectGridName) {
+
+            setValidationInElement(deletedName, "is-invalid", "Invalid name");
+            return;
+        }
+        $('#' + dialogModel).modal('hide');
+
+        $.ajax({
+            type: "POST",
+            url: `/Product/Delete/${id.value}`,
+            success: function () {
+                getProducts()
+            }
+        });
+    }
+</script>
