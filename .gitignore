@@ -3,8 +3,8 @@
 # dependencies
 /asp_net_+_react/react/node_modules
 /asp_net_+_react/asp_net/.vs
-/asp_net_+_react/asp_net/nedrysoft_TestTask/bin
-/asp_net_+_react/asp_net/nedrysoft_TestTask/obj
+/asp_net_+_react/asp_net/asp_net Web api/bin
+/asp_net_+_react/asp_net/asp_net Web api/obj
 /asp_net_mvc/.vs
 /asp_net_mvc/asp_net_mvc/bin
 /asp_net_mvc/asp_net_mvc/obj
