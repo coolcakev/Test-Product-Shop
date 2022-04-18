@@ -1,10 +1,10 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/asp_net_+_react/react/node_modules
-/asp_net_+_react/asp_net/.vs
-/asp_net_+_react/asp_net/asp_net Web api/bin
-/asp_net_+_react/asp_net/asp_net Web api/obj
+/asp_net + react/react/node_modules
+/asp_net + react/asp_net/.vs
+/asp_net + react/asp_net/asp_net Web api/bin
+/asp_net + react/asp_net/asp_net Web api/obj
 /asp_net_mvc/.vs
 /asp_net_mvc/asp_net_mvc/bin
 /asp_net_mvc/asp_net_mvc/obj
